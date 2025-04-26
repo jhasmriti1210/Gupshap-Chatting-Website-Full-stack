@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: #pushed docker image
+          ports:
+            - containerPort: 5173
+          volumeMounts:
+            - name: env-file
+              mountPath: /app/.env
+              subPath: env
+      volumes:
+        - name: env-file
+          secret:
+            secretName: fullstack-secret
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: #pushed docker image
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: env-file
+              mountPath: /app/.env
+              subPath: env
+      volumes:
+        - name: env-file
+          secret:
+            secretName: fullstack-secret
+---

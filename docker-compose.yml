@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.frontend
+    ports:
+      - 5173:5173
+    volumes:
+      - ./apps/frontend:/app/apps/frontend
+    environment:
+      - BACKEND_URL=
+  
+
+  primary-backend:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.backend
+    ports:
+      - 3000:3000
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo_data:/data/db
+
+
+volumes:
+  mongo_data:
